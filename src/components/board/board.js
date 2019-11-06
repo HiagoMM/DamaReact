@@ -1,34 +1,16 @@
 import './board.css';
-import React, { useState } from 'react';
+import React from 'react';
 import Piece from '../piece/piece';
-import { blue } from 'ansi-colors';
+import { insertColor } from './boardUtil';
 
 export default props => {
-  const [matriz, setMatriz] = useState([
-    ['red', '', 'red', '', 'red', '', 'red', ''],
-    ['', 'red', '', 'red', '', 'red', '', 'red'],
-    ['red', '', 'red', '', 'red', '', 'red', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', props.color, '', props.color, '', props.color, '', props.color],
-    [props.color, '', props.color, '', props.color, '', props.color, ''],
-    ['', props.color, '', props.color, '', props.color, '', props.color]
-  ]);
-  function insertColor(rIndex, cIndex) {
-    if (rIndex % 2 === 0) {
-      if (cIndex % 2 === 1) {
-        return 'rgb(238, 238, 238)';
-      } else {
-        return 'rgb(193, 193, 193)';
-      }
-    } else {
-      if (cIndex % 2 === 0) {
-        return 'rgb(238, 238, 238)';
-      } else {
-        return 'rgb(193, 193, 193)';
-      }
-    }
-  }
+  const { size, matriz, setMatriz } = props;
+  const predictions = props.predictions;
+  const tableSize = {
+    gridTemplateColumns: `repeat(${size},1fr)`,
+    gridTemplateRows: `repeat(${size},1fr)`
+  };
+
   const handleDrop = (event, row, column) => {
     let oldIndexRow = event.dataTransfer.getData('rIndex');
     let oldIndexColumn = event.dataTransfer.getData('cIndex');
@@ -40,8 +22,8 @@ export default props => {
   };
 
   const handleDrag = (event, row, column) => {
-    console.log(event);
     event.dataTransfer.setData('rIndex', row);
+    props.makePredictions(row, column);
     event.dataTransfer.setData('cIndex', column);
   };
 
@@ -51,25 +33,33 @@ export default props => {
   };
   return (
     <div className="board">
-      <div className="table">
-        {matriz.map((list, rowIndex) => {
-          return list.map((piece, columnIndex) => {
-            return (
-              <div
-                key={rowIndex.toString() + columnIndex.toString()}
-                style={{
-                  backgroundColor: insertColor(rowIndex, columnIndex)
-                }}
-                className="pieceContainer"
-                onDragOver={handleDragOver}
-                onDrop={event => handleDrop(event, rowIndex, columnIndex)}
-                onDragStart={event => handleDrag(event, rowIndex, columnIndex)}
-              >
-                <Piece piece={piece} />
-              </div>
-            );
-          });
-        })}
+      <div className="table" style={tableSize}>
+        {matriz &&
+          matriz.map((list, columnIndex) => {
+            return list.map((piece, rowIndex) => {
+              return (
+                <div
+                  key={rowIndex.toString() + columnIndex.toString()}
+                  style={{
+                    backgroundColor: insertColor(
+                      piece,
+                      rowIndex,
+                      columnIndex,
+                      predictions
+                    )
+                  }}
+                  className="pieceContainer"
+                  onDragOver={handleDragOver}
+                  onDrop={event => handleDrop(event, rowIndex, columnIndex)}
+                  onDragStart={event =>
+                    handleDrag(event, rowIndex, columnIndex)
+                  }
+                >
+                  {piece && piece.type ? <Piece piece={piece} /> : null}
+                </div>
+              );
+            });
+          })}
       </div>
     </div>
   );

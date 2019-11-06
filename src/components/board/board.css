@@ -5,15 +5,12 @@
   justify-content: center;
 }
 .table {
-  margin-bottom: 3rem;
-  width: 80%;
   box-shadow: 5px 5px 26px -10px rgba(0, 0, 0, 0.75);
   border: 17px double #717677;
   background: rgb(238, 238, 238);
-  height: 85%;
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
+  align-self: center;
+  justify-self: center;
 }
 
 .pieceContainer {

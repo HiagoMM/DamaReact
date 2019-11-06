@@ -2,26 +2,16 @@ import React from 'react';
 import './piece.css';
 
 export default props => {
-  const { piece, style, onClick } = props;
-
-  const handleDrag = event => {
-    event.preventDefault();
-  };
+  const { piece } = props;
+  const p1Color = '#FFFF';
+  const p2Color = '#000';
 
   return (
     <div
-      draggable={piece !== ''}
-      onDrag={handleDrag}
-      onClick={onClick}
-      style={
-        piece
-          ? {
-              ...style,
-              backgroundColor: piece,
-              border: '7px double white'
-            }
-          : null
-      }
+      draggable
+      style={{
+        backgroundColor: piece.type == 'PLAYER1' ? p1Color : p2Color
+      }}
       className="piece"
     ></div>
   );

@@ -1,15 +1,12 @@
 .piece {
-  height: 8vh;
-  width: 4vw;
+  margin: 0.3vw;
+  height: 4.5vw;
+  width: 4.5vw;
   border-radius: 50px;
   cursor: grab;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  position: relative;
   z-index: 1;
   transition: 0.3s;
+  border: 7px double white;
 }
 
 .piece:active {
