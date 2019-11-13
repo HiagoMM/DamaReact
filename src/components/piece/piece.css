@@ -6,7 +6,7 @@
   cursor: grab;
   z-index: 1;
   transition: 0.3s;
-  border: 7px double white;
+  border: 7px double #84879d;
 }
 
 .piece:active {

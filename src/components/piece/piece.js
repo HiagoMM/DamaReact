@@ -3,8 +3,8 @@ import "./piece.css";
 
 export default props => {
   const { piece } = props;
-  const p1Color = "#FFFF";
-  const p2Color = "#000";
+  const p1Color = "rgba(255, 251, 235, 0.88)";
+  const p2Color = "rgb(29, 35, 75)";
 
   return (
     <div

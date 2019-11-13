@@ -2,11 +2,9 @@ import "./board.css";
 import React from "react";
 import Piece from "../piece/piece";
 import { insertColor } from "./boardUtil";
-import Api from "../../services/ApiRequest";
-
 export default props => {
-  const { size, matriz } = props;
-  const predictions = props.predictions;
+  const { size, predictions, setPredictions, board } = props;
+  const matriz = board.table;
   const tableSize = {
     gridTemplateColumns: `repeat(${size},1fr)`,
     gridTemplateRows: `repeat(${size},1fr)`
@@ -15,8 +13,10 @@ export default props => {
   const handleDrop = (event, column, row) => {
     let oldIndexRow = event.dataTransfer.getData("rIndex");
     let oldIndexColumn = event.dataTransfer.getData("cIndex");
-
-    props.movPiece(oldIndexColumn, oldIndexRow, column, row);
+    if (oldIndexColumn !== column && oldIndexRow !== row) {
+      props.movPiece(oldIndexColumn, oldIndexRow, column, row);
+    }
+    setPredictions([]);
   };
 
   const handleDrag = (event, row, column) => {
@@ -31,6 +31,11 @@ export default props => {
   };
   return (
     <div className="board">
+      <h2 className="pieceSide">
+        {board.player1 && board.player1.name}
+        <br />
+        {board.p2Counter}
+      </h2>
       <div className="table" style={tableSize}>
         {matriz &&
           matriz.map((list, rowIndex) => {
@@ -40,7 +45,6 @@ export default props => {
                   key={rowIndex.toString() + columnIndex.toString()}
                   style={{
                     backgroundColor: insertColor(
-                      piece,
                       rowIndex,
                       columnIndex,
                       predictions
@@ -58,6 +62,12 @@ export default props => {
               );
             });
           })}
+      </div>
+      <div>
+        <h2 className="pieceSide p2">
+          {board.player2 && board.player2.name} <br />
+          {board.p1Counter}
+        </h2>
       </div>
     </div>
   );
