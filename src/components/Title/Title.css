@@ -1,7 +1,7 @@
 h1 {
-  margin: 2rem;
+  margin: 1rem;
   text-align: center;
-  font: bold 5vw/1 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font: bold 4vw/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #fff;
   text-shadow: 0 1px 0 #cccccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbbbbb,
     0 4px 0 #b9b9b9, 0 5px 0 #aaaaaa, 0 6px 1px rgba(0, 0, 0, 0.1),

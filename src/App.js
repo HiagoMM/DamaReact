@@ -1,55 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import Board from './components/board/board';
-import Players from './components/players/players';
-import Title from './components/Title/Title';
-import api from './services/ApiRequest';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Board from "./components/board/board";
+import Title from "./components/Title/Title";
+import api from "./services/ApiRequest";
+import "./App.css";
 
-// useEffect(() => {
-//   Util.starter().then(result => {
-//     if (result.value) {
-//       setUser({
-//         name: result.value.name || result.value.login,
-//         imageUrl: result.value.avatar_url
-//       });
-//       console.log({
-//         name: result.value.login,
-//       });
-//     }
-//   });
-// }, []);
 function App() {
-  const [matriz, setMatriz] = useState([[]]);
   const [predictions, setPredictions] = useState([]);
   const [board, setBoard] = useState();
   useEffect(() => {
     api
-      .post('/board', {
+      .post("/board", {
         player1: {
-          name: 'Hiago'
+          name: "Hiago"
         },
         player2: {
-          name: 'Pedro'
+          name: "Pedro"
         }
       })
       .then(res => {
         setBoard(res.data);
-        setMatriz(res.data.table);
+        console.log(res.data.table);
       });
   }, []);
 
   const makePredictions = (x, y) => {
     api
-      .post('position/check', {
+      .post("position/check", {
         board,
         position: {
           positionX: x,
           positionY: y
-        },
-        typePlayer: board.currentPlayer
+        }
       })
       .then(value => {
         setPredictions(value.data.position);
+      });
+  };
+  const movPiece = (ox, oy, positionX, positionY) => {
+    api
+      .post("position/mov", {
+        positionAndBoardDTO: {
+          board,
+          position: {
+            positionX: ox,
+            positionY: oy
+          },
+          typePlayer: board.currentPlayer
+        },
+        end: {
+          positionX,
+          positionY
+        }
+      })
+      .then(value => {
+        //setBoard(value.data);
       });
   };
 
@@ -57,13 +61,13 @@ function App() {
     <div className="container">
       <Title />
       <Board
+        movPiece={(ox, oy, x, y) => movPiece(ox, oy, x, y)}
         makePredictions={(x, y) => makePredictions(x, y)}
         predictions={predictions}
-        matriz={matriz}
-        setMatriz={setMatriz}
+        matriz={board && board.table}
         size={8}
       />
-      <Players />
+      {/* <Players /> */}
     </div>
   );
 }

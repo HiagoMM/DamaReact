@@ -1,42 +1,40 @@
-import './board.css';
-import React from 'react';
-import Piece from '../piece/piece';
-import { insertColor } from './boardUtil';
+import "./board.css";
+import React from "react";
+import Piece from "../piece/piece";
+import { insertColor } from "./boardUtil";
+import Api from "../../services/ApiRequest";
 
 export default props => {
-  const { size, matriz, setMatriz } = props;
+  const { size, matriz } = props;
   const predictions = props.predictions;
   const tableSize = {
     gridTemplateColumns: `repeat(${size},1fr)`,
     gridTemplateRows: `repeat(${size},1fr)`
   };
 
-  const handleDrop = (event, row, column) => {
-    let oldIndexRow = event.dataTransfer.getData('rIndex');
-    let oldIndexColumn = event.dataTransfer.getData('cIndex');
+  const handleDrop = (event, column, row) => {
+    let oldIndexRow = event.dataTransfer.getData("rIndex");
+    let oldIndexColumn = event.dataTransfer.getData("cIndex");
 
-    const element = matriz[oldIndexRow][oldIndexColumn];
-    matriz[oldIndexRow][oldIndexColumn] = '';
-    matriz[row][column] = element;
-    setMatriz([...matriz]);
+    props.movPiece(oldIndexColumn, oldIndexRow, column, row);
   };
 
   const handleDrag = (event, row, column) => {
-    event.dataTransfer.setData('rIndex', row);
-    props.makePredictions(row, column);
-    event.dataTransfer.setData('cIndex', column);
+    event.dataTransfer.setData("rIndex", row);
+    event.dataTransfer.setData("cIndex", column);
+    props.makePredictions(column, row);
   };
 
   const handleDragOver = event => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   };
   return (
     <div className="board">
       <div className="table" style={tableSize}>
         {matriz &&
-          matriz.map((list, columnIndex) => {
-            return list.map((piece, rowIndex) => {
+          matriz.map((list, rowIndex) => {
+            return list.map((piece, columnIndex) => {
               return (
                 <div
                   key={rowIndex.toString() + columnIndex.toString()}
@@ -50,7 +48,7 @@ export default props => {
                   }}
                   className="pieceContainer"
                   onDragOver={handleDragOver}
-                  onDrop={event => handleDrop(event, rowIndex, columnIndex)}
+                  onDrop={event => handleDrop(event, columnIndex, rowIndex)}
                   onDragStart={event =>
                     handleDrag(event, rowIndex, columnIndex)
                   }
