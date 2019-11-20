@@ -8,6 +8,7 @@ import "./App.css";
 function App() {
   const [predictions, setPredictions] = useState([]);
   const [game, setGame] = useState();
+  const [restart, setRestart] = useState();
   useEffect(() => {
     Swal.mixin({
       input: "text",
@@ -42,7 +43,7 @@ function App() {
             });
         });
       });
-  }, []);
+  }, [restart]);
 
   const makePredictions = (x, y) => {
     api
@@ -75,6 +76,11 @@ function App() {
       })
       .then(value => {
         setGame(value.data);
+        if (value.data.winner) {
+          Swal.fire(value.data.winner.name, "Vencedor !!", "success").then(
+            setRestart
+          );
+        }
       });
   };
 
