@@ -7,7 +7,7 @@ import "./App.css";
 
 function App() {
   const [predictions, setPredictions] = useState([]);
-  const [board, setBoard] = useState({});
+  const [game, setGame] = useState();
   useEffect(() => {
     Swal.mixin({
       input: "text",
@@ -16,26 +16,38 @@ function App() {
     })
       .queue(["Player 1", "Player 2"])
       .then(result => {
-        console.log(result);
-        api
-          .post("/board", {
-            player1: {
-              name: result.value[0]
-            },
-            player2: {
-              name: result.value[1]
-            }
-          })
-          .then(res => {
-            setBoard(res.data);
-          });
+        Swal.fire({
+          title: "Tamanho do tabuleiro",
+          input: "select",
+          inputOptions: {
+            8: 8,
+            10: 10,
+            12: 12
+          },
+          inputPlaceholder: "Escolha o tamanho do tabuleiro"
+        }).then(({ value: size }) => {
+          size = size || 8;
+          api
+            .post("/board", {
+              size,
+              player1: {
+                name: (result.value && result.value[0]) || "Player 1"
+              },
+              player2: {
+                name: (result.value && result.value[1]) || "Player 2"
+              }
+            })
+            .then(res => {
+              setGame(res.data);
+            });
+        });
       });
   }, []);
 
   const makePredictions = (x, y) => {
     api
       .post("position/check", {
-        board,
+        game,
         position: {
           positionX: x,
           positionY: y
@@ -49,12 +61,12 @@ function App() {
     api
       .post("position/mov", {
         positionAndBoardDTO: {
-          board,
+          game,
           position: {
             positionX: ox,
             positionY: oy
           },
-          typePlayer: board.currentPlayer
+          typePlayer: game.currentPlayer
         },
         end: {
           positionX,
@@ -62,21 +74,25 @@ function App() {
         }
       })
       .then(value => {
-        setBoard(value.data);
+        setGame(value.data);
       });
   };
 
   return (
     <div className="container">
-      <Title p1Counter={board.p1Counter} p2Counter={board.p2Counter} />
-      <Board
-        setPredictions={pre => setPredictions(pre)}
-        movPiece={(ox, oy, x, y) => movPiece(ox, oy, x, y)}
-        makePredictions={(x, y) => makePredictions(x, y)}
-        predictions={predictions}
-        board={board}
-        size={8}
-      />
+      {game && (
+        <>
+          <Title p1Counter={game.p1Counter} p2Counter={game.p2Counter} />
+          <Board
+            setPredictions={pre => setPredictions(pre)}
+            movPiece={(ox, oy, x, y) => movPiece(ox, oy, x, y)}
+            makePredictions={(x, y) => makePredictions(x, y)}
+            predictions={predictions}
+            game={game}
+            size={game.size}
+          />
+        </>
+      )}
     </div>
   );
 }

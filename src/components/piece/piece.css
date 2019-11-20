@@ -1,12 +1,14 @@
 .piece {
+  position: relative;
   margin: 0.3vw;
-  height: 4vw;
-  width: 4vw;
+
   border-radius: 50px;
   cursor: grab;
   z-index: 1;
-  transition: 0.3s;
   border: 7px double #84879d;
+  background-position: center;
+  background-size: 71%;
+  background-repeat: no-repeat;
 }
 
 .piece:active {

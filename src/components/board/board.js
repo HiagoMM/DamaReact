@@ -3,8 +3,8 @@ import React from "react";
 import Piece from "../piece/piece";
 import { insertColor } from "./boardUtil";
 export default props => {
-  const { size, predictions, setPredictions, board } = props;
-  const matriz = board.table;
+  const { size, predictions, setPredictions, game } = props;
+  const matriz = game.board.table;
   const tableSize = {
     gridTemplateColumns: `repeat(${size},1fr)`,
     gridTemplateRows: `repeat(${size},1fr)`
@@ -32,9 +32,9 @@ export default props => {
   return (
     <div className="board">
       <h2 className="pieceSide">
-        {board.player1 && board.player1.name}
+        {game.player1 && game.player1.name}
         <br />
-        {board.p2Counter}
+        {game.p2Counter}
       </h2>
       <div className="table" style={tableSize}>
         {matriz &&
@@ -57,7 +57,9 @@ export default props => {
                     handleDrag(event, rowIndex, columnIndex)
                   }
                 >
-                  {piece && piece.type ? <Piece piece={piece} /> : null}
+                  {piece && piece.type ? (
+                    <Piece size={game.size} piece={piece} />
+                  ) : null}
                 </div>
               );
             });
@@ -65,8 +67,8 @@ export default props => {
       </div>
       <div>
         <h2 className="pieceSide p2">
-          {board.player2 && board.player2.name} <br />
-          {board.p1Counter}
+          {game.player2 && game.player2.name} <br />
+          {game.p1Counter}
         </h2>
       </div>
     </div>
