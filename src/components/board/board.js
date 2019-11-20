@@ -1,10 +1,11 @@
 import "./board.css";
-import React from "react";
+import React, { useState } from "react";
 import Piece from "../piece/piece";
 import { insertColor } from "./boardUtil";
 export default props => {
   const { size, predictions, setPredictions, game } = props;
   const matriz = game.board.table;
+  const [clickPos, setClickPos] = useState({});
   const tableSize = {
     gridTemplateColumns: `repeat(${size},1fr)`,
     gridTemplateRows: `repeat(${size},1fr)`
@@ -29,6 +30,22 @@ export default props => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   };
+
+  const handleClick = (event, columnIndex, rowIndex) => {
+    if (predictions.length) {
+      props.movPiece(
+        clickPos.columnIndex,
+        clickPos.rowIndex,
+        columnIndex,
+        rowIndex
+      );
+
+      setPredictions([]);
+    } else {
+      props.makePredictions(columnIndex, rowIndex);
+      setClickPos({ columnIndex, rowIndex });
+    }
+  };
   return (
     <div className="board">
       <h2 className="pieceSide">
@@ -52,6 +69,7 @@ export default props => {
                   }}
                   className="pieceContainer"
                   onDragOver={handleDragOver}
+                  onClick={event => handleClick(event, columnIndex, rowIndex)}
                   onDrop={event => handleDrop(event, columnIndex, rowIndex)}
                   onDragStart={event =>
                     handleDrag(event, rowIndex, columnIndex)
